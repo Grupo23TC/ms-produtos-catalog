@@ -1,11 +1,31 @@
-version: '3'
+version: '3.8'
 
 services:
   app:
-    image: 'ms-produtos-catalog:dev'
     build:
       context: .
       dockerfile: Dockerfile
     container_name: ms-produtos-catalog
     ports:
-      - "8082:8080"
+      - "8084:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://produtos-catalog-db:5432/produtos-catalog-db
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=secret
+    depends_on:
+      - produtos-catalog-db
+
+  produtos-catalog-db:
+    image: postgres
+    container_name: produtos-catalog-db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: produtos-catalog-db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data-produtos-catalog:/var/lib/postgresql/data
+
+volumes:
+  postgres_data-produtos-catalog:

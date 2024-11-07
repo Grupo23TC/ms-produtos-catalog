@@ -3,6 +3,7 @@ package br.com.fiap.ms_produtos_catalog.service;
 import br.com.fiap.ms_produtos_catalog.dto.request.CadastrarProdutoRequestDTO;
 import br.com.fiap.ms_produtos_catalog.dto.response.ProdutoDeletadoResponseDTO;
 import br.com.fiap.ms_produtos_catalog.dto.response.ProdutoResponseDTO;
+import br.com.fiap.ms_produtos_catalog.exception.ProdutoNotFoundException;
 import br.com.fiap.ms_produtos_catalog.mapper.ProdutoMapper;
 import br.com.fiap.ms_produtos_catalog.model.Produto;
 import br.com.fiap.ms_produtos_catalog.repository.ProdutoRepository;
@@ -26,7 +27,7 @@ public class ProdutoServiceImpl implements ProdutoService{
     @Override
     public ProdutoResponseDTO buscarProdutosPorId(Long id) {
         Produto produto = repository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Produto com id: " + id + " não encontrado")
+                () -> new ProdutoNotFoundException("Produto com id: " + id + " não encontrado")
         );
         return ProdutoMapper.toProdutoResponse(produto);
     }
@@ -45,12 +46,12 @@ public class ProdutoServiceImpl implements ProdutoService{
     @Transactional
     public ProdutoResponseDTO atualizarProduto(Long id, CadastrarProdutoRequestDTO request) {
         Produto produto = repository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Produto com id: " + id + " não encontrado")
+                () -> new ProdutoNotFoundException("Produto com id: " + id + " não encontrado")
         );
         produto.setNome(request.nome());
         produto.setDescricao(request.descricao());
         produto.setValor(request.valor());
-        produto = repository.save(produto);//TODO preciso salvar dnv?
+        produto = repository.save(produto);
 
         return ProdutoMapper.toProdutoResponse(produto);
     }
@@ -59,7 +60,7 @@ public class ProdutoServiceImpl implements ProdutoService{
     public ProdutoDeletadoResponseDTO deletarProduto(Long id) {
         try {
             repository.findById(id).orElseThrow(
-                    () -> new IllegalArgumentException("Produto com id: " + id + " não encontrado")
+                    () -> new ProdutoNotFoundException("Produto com id: " + id + " não encontrado")
             );
             repository.deleteById(id);
             return new ProdutoDeletadoResponseDTO(true);

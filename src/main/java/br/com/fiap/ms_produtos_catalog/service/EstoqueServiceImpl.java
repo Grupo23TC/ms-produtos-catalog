@@ -2,6 +2,8 @@ package br.com.fiap.ms_produtos_catalog.service;
 
 import br.com.fiap.ms_produtos_catalog.dto.request.InserirEstoqueRequestDTO;
 import br.com.fiap.ms_produtos_catalog.dto.response.EstoqueResponseDTO;
+import br.com.fiap.ms_produtos_catalog.exception.EstoqueNotFoundException;
+import br.com.fiap.ms_produtos_catalog.exception.ProdutoNotFoundException;
 import br.com.fiap.ms_produtos_catalog.mapper.EstoqueMapper;
 import br.com.fiap.ms_produtos_catalog.mapper.ProdutoMapper;
 import br.com.fiap.ms_produtos_catalog.model.Estoque;
@@ -12,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class EstoqueServiceImpl implements EstoqueService{
@@ -30,13 +34,20 @@ public class EstoqueServiceImpl implements EstoqueService{
     @Override
     public EstoqueResponseDTO buscarEstoquePorId(Long id) {
         Estoque estoque = estoqueRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("Estoque com id: " + id + " não encontrado")
+                () -> new EstoqueNotFoundException("Estoque com id: " + id + " não encontrado")
         );
         return EstoqueMapper.toEstoqueResponse(estoque);
     }
 
     @Override
     public EstoqueResponseDTO inserirProdutoNoEstoque(InserirEstoqueRequestDTO estoqueRequestDTO) {
+
+        Optional<Produto> produto = produtoRepository.findById(estoqueRequestDTO.produto().getId());
+
+        if(produto.isEmpty()) {
+            throw new ProdutoNotFoundException("Produto com id: " + produto.get().getId() + " não existe");
+        }
+
         Estoque estoque = new Estoque();
         estoque.setProduto(estoqueRequestDTO.produto());
         estoque.setQuantidade(estoqueRequestDTO.quantidade());
