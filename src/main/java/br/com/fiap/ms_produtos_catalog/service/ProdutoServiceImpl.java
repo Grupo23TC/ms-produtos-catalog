@@ -38,6 +38,7 @@ public class ProdutoServiceImpl implements ProdutoService{
         produto.setNome(produtoRequest.nome());
         produto.setDescricao(produtoRequest.descricao());
         produto.setValor(produtoRequest.valor());
+        produto.setQuantidadeEstoque(produtoRequest.quantidade());
 
         return ProdutoMapper.toProdutoResponse(repository.save(produto));
     }
@@ -67,5 +68,31 @@ public class ProdutoServiceImpl implements ProdutoService{
         } catch (Exception e) {
             return new ProdutoDeletadoResponseDTO(false);
         }
+    }
+
+    @Override
+    public Produto atualizarQuantidadeProduto(Long id, int quantidade) {
+        Produto produto = repository.findById(id).orElseThrow(() -> new ProdutoNotFoundException("Produto não encontrado"));
+
+        if(quantidade > produto.getQuantidadeEstoque()) {
+            throw new ProdutoNotFoundException("Quantidade requerida maior do que tem em estoque");
+        } else {
+            produto.setQuantidadeEstoque(produto.getQuantidadeEstoque() - quantidade);
+        }
+
+        return repository.save(produto);
+    }
+
+
+    @Override
+    public Produto atualizarProdutoPedidoCancelado(Long id, int quantidade) {
+        Produto produto = repository.findById(id).orElseThrow(() -> new ProdutoNotFoundException("Produto não encontrado"));
+
+        if(quantidade <= 0) {
+            throw new ProdutoNotFoundException("Quantidade não pode ser menor do que zero");
+        }
+        produto.setQuantidadeEstoque(quantidade + produto.getQuantidadeEstoque());
+
+        return repository.save(produto);
     }
 }

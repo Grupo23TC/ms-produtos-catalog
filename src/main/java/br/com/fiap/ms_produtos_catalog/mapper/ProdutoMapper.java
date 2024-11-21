@@ -10,6 +10,7 @@ public class ProdutoMapper {
                 produto.getId(),
                 produto.getNome(),
                 produto.getDescricao(),
+                produto.getQuantidadeEstoque(),
                 produto.getValor()
         );
     }
