@@ -21,6 +21,10 @@ public class ProdutoController {
     @Autowired
     private ProdutoService service;
 
+    public ProdutoController(ProdutoService produtoService) {
+        this.service = produtoService;
+    }
+
     @GetMapping
     public ResponseEntity<Page<ProdutoResponseDTO>> listarProdutos(
             @PageableDefault(page = 0, size = 20) Pageable pageable) {
