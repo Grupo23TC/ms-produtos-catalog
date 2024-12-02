@@ -24,7 +24,7 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: produtos-catalog-db
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - postgres_data-produtos-catalog:/var/lib/postgresql/data
     healthcheck:
