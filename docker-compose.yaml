@@ -7,14 +7,15 @@ services:
       dockerfile: Dockerfile
     container_name: ms-produtos-catalog
     ports:
-      - "8084:8080"
+      - "8084:8084"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://produtos-catalog-db:5432/produtos-catalog-db
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=secret
     depends_on:
       - produtos-catalog-db
-
+    networks:
+      - shared_network
   produtos-catalog-db:
     image: postgres
     container_name: produtos-catalog-db
@@ -26,6 +27,17 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data-produtos-catalog:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "root"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - shared_network
 
 volumes:
   postgres_data-produtos-catalog:
+
+networks:
+  shared_network:
+    external: true

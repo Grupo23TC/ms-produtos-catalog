@@ -59,15 +59,11 @@ public class ProdutoServiceImpl implements ProdutoService{
 
     @Override
     public ProdutoDeletadoResponseDTO deletarProduto(Long id) {
-        try {
             repository.findById(id).orElseThrow(
                     () -> new ProdutoNotFoundException("Produto com id: " + id + " não encontrado")
             );
             repository.deleteById(id);
             return new ProdutoDeletadoResponseDTO(true);
-        } catch (Exception e) {
-            return new ProdutoDeletadoResponseDTO(false);
-        }
     }
 
     @Override
