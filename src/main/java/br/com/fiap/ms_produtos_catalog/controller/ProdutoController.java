@@ -6,6 +6,7 @@ import br.com.fiap.ms_produtos_catalog.dto.response.ProdutoDeletadoResponseDTO;
 import br.com.fiap.ms_produtos_catalog.dto.response.ProdutoResponseDTO;
 import br.com.fiap.ms_produtos_catalog.model.Produto;
 import br.com.fiap.ms_produtos_catalog.service.ProdutoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +38,7 @@ public class ProdutoController {
     }
 
     @PostMapping
-    public ResponseEntity<ProdutoResponseDTO> cadastrarProduto(@RequestBody CadastrarProdutoRequestDTO produto) {
+    public ResponseEntity<ProdutoResponseDTO> cadastrarProduto(@Valid @RequestBody CadastrarProdutoRequestDTO produto) {
         ProdutoResponseDTO produtoSalvo = service.cadastrarProduto(produto);
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoSalvo);
     }
@@ -45,7 +46,7 @@ public class ProdutoController {
     @PutMapping("/{id}")
     public ResponseEntity<ProdutoResponseDTO> atualizarProduto(
             @PathVariable Long id,
-            @RequestBody CadastrarProdutoRequestDTO produtoRequest
+            @Valid @RequestBody CadastrarProdutoRequestDTO produtoRequest
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(service.atualizarProduto(id, produtoRequest));
     }
@@ -58,7 +59,7 @@ public class ProdutoController {
     @PutMapping("/atualizar-quantidade/{produtoId}")
     public ResponseEntity<Produto> atualizarQuantidadeProduto(
         @PathVariable Long produtoId,
-        @RequestBody AtualizarQuantidadeDTO body
+        @Valid @RequestBody AtualizarQuantidadeDTO body
     ) {
         return ResponseEntity.status(HttpStatus.OK).body(service.atualizarQuantidadeProduto(produtoId, body.quantidade()));
     }

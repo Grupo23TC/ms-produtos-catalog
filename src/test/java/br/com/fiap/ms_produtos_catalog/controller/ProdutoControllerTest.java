@@ -103,7 +103,7 @@ class ProdutoControllerTest {
 
         mockMvc.perform(post("/produtos")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":1,\"nome\":null,\"quantidadeEmEstoque\":null,\"descricao\":null,\"valor\":null}")
+                        .content("{\"nome\": \"Produto Teste\",\"descricao\": \"Descrição do Produto\",\"valor\": 100.00,\"quantidade\": 10}")
                 )
                 .andExpect(status().isCreated());
     }
@@ -115,7 +115,7 @@ class ProdutoControllerTest {
 
         mockMvc.perform(put("/produtos/atualizar-quantidade/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":1,\"nome\":null,\"quantidadeEmEstoque\":null,\"descricao\":null,\"valor\":null}")
+                        .content("{\"nome\": \"Produto Teste\",\"descricao\": \"Descrição do Produto\",\"valor\": 100.00,\"quantidade\": 10}")
                 )
                 .andExpect(status().isOk());
     }
