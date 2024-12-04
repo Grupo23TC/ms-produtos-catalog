@@ -21,6 +21,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 
 @SpringBootTest
@@ -101,6 +103,21 @@ public class ProdutoServiceIT {
         assertThat(response)
                 .isNotNull()
                 .isInstanceOf(Produto.class);
+    }
+
+    @Test
+    void devePermitirAtualizarProduto() {
+        Long id = 1L;
+        CadastrarProdutoRequestDTO request = ProdutoUtil.gerarCadastrarProdutoRequest();
+
+        ProdutoResponseDTO produtoAtualizado = produtoService.atualizarProduto(id, request);
+
+        Assertions.assertThat(produtoAtualizado)
+            .isNotNull()
+            .isInstanceOf(ProdutoResponseDTO.class);
+
+        Assertions.assertThat(produtoAtualizado.id())
+            .isEqualTo(id);
     }
 
 }

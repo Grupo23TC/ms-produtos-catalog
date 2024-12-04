@@ -186,4 +186,24 @@ class ProdutoServiceImplTest {
 
         verify(service, times(1)).atualizarProdutoPedidoCancelado(1L, quantidade);
     }
+
+    @Test
+    void devePermitirAtualizarProduto() {
+        Long id = 1L;
+        ProdutoResponseDTO produto = ProdutoUtil.gerarProdutoResponse();
+        CadastrarProdutoRequestDTO request = ProdutoUtil.gerarCadastrarProdutoRequest();
+
+        when(service.atualizarProduto(any(Long.class), any(CadastrarProdutoRequestDTO.class))).thenReturn(produto);
+
+        ProdutoResponseDTO produtoAtualizado = service.atualizarProduto(id, request);
+
+        assertThat(produtoAtualizado)
+            .isNotNull()
+            .isInstanceOf(ProdutoResponseDTO.class);
+
+        assertThat(produtoAtualizado.id())
+            .isEqualTo(id);
+
+        verify(service, times(1)).atualizarProduto(any(Long.class), any(CadastrarProdutoRequestDTO.class));
+    }
 }

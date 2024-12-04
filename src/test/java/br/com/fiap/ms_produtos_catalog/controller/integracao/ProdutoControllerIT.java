@@ -74,4 +74,25 @@ public class ProdutoControllerIT {
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
+
+    @Test
+    void deveRetornarErrosDeValidacao_QuandoPayloadForInvalido() {
+        String payloadInvalido = """
+                {
+                  "nome": "",
+                  "descricao": "",
+                  "valor": -100.00,
+                  "quantidade": -10
+                }
+            """;
+
+        given()
+            .contentType(ContentType.JSON)
+            .body(payloadInvalido)
+            .when()
+            .post("/produtos")
+            .then()
+            .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value())
+            .body(matchesJsonSchemaInClasspath("schemas/erroPayload.schema.json"));
+    }
 }
